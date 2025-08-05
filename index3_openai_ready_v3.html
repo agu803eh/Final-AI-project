@@ -11,53 +11,92 @@
       box-sizing: border-box;
     }
 
+    :root {
+      --bg-primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      --bg-secondary: rgba(255, 255, 255, 0.95);
+      --text-primary: #333;
+      --text-secondary: #666;
+      --border-color: rgba(255, 255, 255, 0.2);
+      --card-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+      --sidebar-width: 250px;
+      --sidebar-collapsed-width: 60px;
+    }
+
+    [data-theme="dark"] {
+      --bg-primary: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+      --bg-secondary: rgba(30, 30, 30, 0.95);
+      --text-primary: #e0e0e0;
+      --text-secondary: #b0b0b0;
+      --border-color: rgba(255, 255, 255, 0.1);
+      --card-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+    }
+
     body {
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      background: var(--bg-primary);
       min-height: 100vh;
-      color: #333;
+      color: var(--text-primary);
       overflow-x: hidden;
+      transition: all 0.3s ease;
     }
 
     .dashboard {
       display: grid;
-      grid-template-columns: 1fr 2fr;
-      gap: 20px;
-      padding: 20px;
-      max-width: 1400px;
-      margin: 0 auto;
-      min-height: 100vh;
+      grid-template-columns: 300px 1fr 300px;
+      grid-template-rows: auto 1fr;
+      gap: 15px;
+      padding: 15px;
+      max-width: 100vw;
+      height: 100vh;
+      overflow: hidden;
     }
 
-    .card {
+    .header-section {
+      grid-column: 1 / -1;
       background: rgba(255, 255, 255, 0.95);
       backdrop-filter: blur(10px);
-      border-radius: 20px;
-      padding: 25px;
-      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      border-radius: 15px;
+      padding: 15px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
       border: 1px solid rgba(255, 255, 255, 0.2);
     }
 
-    .card:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);
-    }
-
     .input-section {
-      height: fit-content;
+      overflow-y: auto;
+      max-height: calc(100vh - 120px);
     }
 
     .monitoring-section {
       display: flex;
       flex-direction: column;
-      gap: 20px;
+      gap: 15px;
+      overflow: hidden;
+    }
+
+    .activities-section {
+      overflow-y: auto;
+      max-height: calc(100vh - 120px);
+    }
+
+    .card {
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(10px);
+      border-radius: 15px;
+      padding: 20px;
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 20px 45px rgba(0, 0, 0, 0.15);
     }
 
     h1 {
       text-align: center;
-      margin-bottom: 30px;
-      font-size: 2.5em;
+      margin-bottom: 20px;
+      font-size: 2.2em;
       background: linear-gradient(135deg, #667eea, #764ba2);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
@@ -72,15 +111,15 @@
 
     .vital-stats {
       display: grid;
-      grid-template-columns: 1fr 1fr;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
       gap: 15px;
-      margin-bottom: 30px;
+      margin-bottom: 20px;
     }
 
     .stat-card {
       background: linear-gradient(135deg, #f8f9ff, #e8f0fe);
-      border-radius: 15px;
-      padding: 20px;
+      border-radius: 12px;
+      padding: 15px;
       text-align: center;
       border: 2px solid transparent;
       transition: all 0.3s ease;
@@ -109,7 +148,7 @@
     }
 
     .stat-value {
-      font-size: 2.5em;
+      font-size: 2em;
       font-weight: bold;
       color: #667eea;
       margin-bottom: 5px;
@@ -128,56 +167,56 @@
     }
 
     .stat-label {
-      font-size: 0.9em;
+      font-size: 0.8em;
       color: #666;
       text-transform: uppercase;
       letter-spacing: 1px;
     }
 
     .stat-timestamp {
-      font-size: 0.7em;
+      font-size: 0.65em;
       color: #888;
-      margin-top: 5px;
+      margin-top: 3px;
     }
 
     .form-group {
-      margin-bottom: 20px;
+      margin-bottom: 15px;
       position: relative;
     }
 
     label {
       display: block;
-      margin-bottom: 8px;
+      margin-bottom: 6px;
       font-weight: 600;
       color: #555;
-      font-size: 0.95em;
+      font-size: 0.9em;
     }
 
-    input[type="number"] {
+    input[type="number"], select {
       width: 100%;
-      padding: 15px 20px;
-      font-size: 16px;
+      padding: 12px 15px;
+      font-size: 14px;
       border: 2px solid #e0e0e0;
-      border-radius: 12px;
+      border-radius: 10px;
       transition: all 0.3s ease;
       background: #f8f9ff;
     }
 
-    input[type="number"]:focus {
+    input[type="number"]:focus, select:focus {
       outline: none;
       border-color: #667eea;
       box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
-      transform: translateY(-2px);
+      transform: translateY(-1px);
     }
 
     .submit-btn {
       width: 100%;
-      padding: 18px;
+      padding: 15px;
       background: linear-gradient(135deg, #667eea, #764ba2);
       color: white;
       border: none;
-      border-radius: 12px;
-      font-size: 18px;
+      border-radius: 10px;
+      font-size: 16px;
       font-weight: 600;
       cursor: pointer;
       transition: all 0.3s ease;
@@ -197,8 +236,8 @@
     }
 
     .submit-btn:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
     }
 
     .submit-btn:hover::before {
@@ -217,21 +256,21 @@
 
     .export-btn {
       width: 100%;
-      padding: 15px;
+      padding: 12px;
       background: linear-gradient(135deg, #28a745, #20c997);
       color: white;
       border: none;
-      border-radius: 12px;
-      font-size: 16px;
+      border-radius: 10px;
+      font-size: 14px;
       font-weight: 600;
       cursor: pointer;
       transition: all 0.3s ease;
-      margin-top: 15px;
+      margin-top: 10px;
     }
 
     .export-btn:hover {
       transform: translateY(-2px);
-      box-shadow: 0 8px 25px rgba(40, 167, 69, 0.3);
+      box-shadow: 0 6px 20px rgba(40, 167, 69, 0.3);
     }
 
     .export-btn:disabled {
@@ -242,44 +281,45 @@
 
     .clear-btn {
       width: 100%;
-      padding: 12px;
+      padding: 10px;
       background: linear-gradient(135deg, #dc3545, #c82333);
       color: white;
       border: none;
-      border-radius: 12px;
-      font-size: 14px;
+      border-radius: 10px;
+      font-size: 12px;
       font-weight: 600;
       cursor: pointer;
       transition: all 0.3s ease;
-      margin-top: 10px;
+      margin-top: 8px;
     }
 
     .clear-btn:hover {
       transform: translateY(-2px);
-      box-shadow: 0 8px 25px rgba(220, 53, 69, 0.3);
+      box-shadow: 0 6px 20px rgba(220, 53, 69, 0.3);
     }
 
     .chart-container {
       position: relative;
-      height: 300px;
+      height: 250px;
       background: #f8f9ff;
-      border-radius: 15px;
-      padding: 20px;
-      margin-bottom: 20px;
+      border-radius: 12px;
+      padding: 15px;
+      margin-bottom: 15px;
       overflow: hidden;
+      flex: 1;
     }
 
     .chart-title {
-      font-size: 1.2em;
+      font-size: 1.1em;
       font-weight: 600;
       color: #333;
-      margin-bottom: 15px;
+      margin-bottom: 10px;
       text-align: center;
     }
 
     .chart-canvas {
       width: 100%;
-      height: 250px;
+      height: 180px;
       position: relative;
     }
 
@@ -288,8 +328,8 @@
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
-      width: 100px;
-      height: 100px;
+      width: 80px;
+      height: 80px;
       border-radius: 50%;
       background: radial-gradient(circle, #667eea, #764ba2);
       animation: pulse 1s ease-in-out infinite;
@@ -298,7 +338,7 @@
       justify-content: center;
       color: white;
       font-weight: bold;
-      font-size: 1.2em;
+      font-size: 1.1em;
     }
 
     @keyframes pulse {
@@ -308,9 +348,9 @@
     }
 
     .status-indicator {
-      padding: 15px;
-      border-radius: 12px;
-      margin-bottom: 20px;
+      padding: 12px;
+      border-radius: 10px;
+      margin-bottom: 15px;
       transition: all 0.3s ease;
       font-weight: 500;
       position: relative;
@@ -325,7 +365,7 @@
     .status-normal {
       background: linear-gradient(135deg, #d4edda, #c3e6cb);
       color: #155724;
-      border-left: 5px solid #28a745;
+      border-left: 4px solid #28a745;
     }
 
     .status-normal.persistent {
@@ -336,7 +376,7 @@
     .status-abnormal {
       background: linear-gradient(135deg, #f8d7da, #f5c6cb);
       color: #721c24;
-      border-left: 5px solid #dc3545;
+      border-left: 4px solid #dc3545;
     }
 
     .status-abnormal.persistent {
@@ -347,7 +387,7 @@
     .status-warning {
       background: linear-gradient(135deg, #fff3cd, #ffeaa7);
       color: #856404;
-      border-left: 5px solid #ffc107;
+      border-left: 4px solid #ffc107;
     }
 
     .status-warning.persistent {
@@ -358,28 +398,29 @@
     .status-error {
       background: linear-gradient(135deg, #f8d7da, #f5c6cb);
       color: #721c24;
-      border-left: 5px solid #dc3545;
+      border-left: 4px solid #dc3545;
     }
 
     .history-section {
-      max-height: 400px;
+      max-height: 300px;
       overflow-y: auto;
-      padding-right: 10px;
+      padding-right: 8px;
+      flex: 1;
     }
 
     .history-item {
       background: linear-gradient(135deg, #f8f9ff, #e8f0fe);
-      padding: 15px;
-      margin-bottom: 10px;
-      border-radius: 10px;
-      border-left: 4px solid #667eea;
+      padding: 12px;
+      margin-bottom: 8px;
+      border-radius: 8px;
+      border-left: 3px solid #667eea;
       transition: all 0.3s ease;
       position: relative;
     }
 
     .history-item:hover {
-      transform: translateX(5px);
-      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+      transform: translateX(3px);
+      box-shadow: 0 3px 12px rgba(0, 0, 0, 0.1);
     }
 
     .history-item.latest {
@@ -421,21 +462,6 @@
       text-align: center;
     }
 
-    @media (max-width: 768px) {
-      .dashboard {
-        grid-template-columns: 1fr;
-        padding: 10px;
-      }
-      
-      .vital-stats {
-        grid-template-columns: 1fr;
-      }
-      
-      h1 {
-        font-size: 2em;
-      }
-    }
-
     .notification {
       position: fixed;
       top: 20px;
@@ -463,11 +489,11 @@
 
     .heart-rate-graph {
       position: relative;
-      height: 200px;
+      height: 150px;
       background: #f8f9ff;
-      border-radius: 10px;
+      border-radius: 8px;
       overflow: hidden;
-      margin-top: 10px;
+      margin-top: 8px;
     }
 
     .graph-line {
@@ -491,9 +517,9 @@
       position: fixed;
       bottom: 20px;
       right: 20px;
-      padding: 10px 15px;
-      border-radius: 8px;
-      font-size: 0.9em;
+      padding: 8px 12px;
+      border-radius: 6px;
+      font-size: 0.85em;
       font-weight: 500;
       z-index: 1002;
     }
@@ -512,15 +538,90 @@
 
     .data-persistence-indicator {
       position: fixed;
-      bottom: 60px;
+      bottom: 55px;
       right: 20px;
-      padding: 8px 12px;
-      border-radius: 6px;
-      font-size: 0.8em;
+      padding: 6px 10px;
+      border-radius: 5px;
+      font-size: 0.75em;
       background: #e3f2fd;
       color: #1565c0;
       border: 1px solid #bbdefb;
       z-index: 1003;
+    }
+
+    .compact-card {
+      height: calc(50% - 7.5px);
+      overflow: hidden;
+    }
+
+    .compact-card .history-section {
+      max-height: 200px;
+    }
+
+    .compact-form {
+      max-height: 400px;
+      overflow-y: auto;
+    }
+
+    /* Scrollbar styling */
+    ::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 3px;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: rgba(102, 126, 234, 0.3);
+      border-radius: 3px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+      background: rgba(102, 126, 234, 0.5);
+    }
+
+    @media (max-width: 1200px) {
+      .dashboard {
+        grid-template-columns: 280px 1fr 280px;
+      }
+    }
+
+    @media (max-width: 1000px) {
+      .dashboard {
+        grid-template-columns: 1fr;
+        grid-template-rows: auto auto auto;
+        height: auto;
+        overflow: visible;
+      }
+      
+      .input-section, .activities-section {
+        max-height: none;
+        overflow: visible;
+      }
+      
+      .vital-stats {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      
+      h1 {
+        font-size: 1.8em;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .dashboard {
+        padding: 10px;
+      }
+      
+      .vital-stats {
+        grid-template-columns: 1fr;
+      }
+      
+      h1 {
+        font-size: 1.6em;
+      }
     }
   </style>
 </head>
@@ -533,9 +634,9 @@
   </div>
 
   <div class="dashboard">
-    <div class="card input-section">
+    <!-- Header with vital stats -->
+    <div class="header-section">
       <h1>🏥 Health Monitor Pro</h1>
-      
       <div class="vital-stats">
         <div class="stat-card" id="hrStatCard">
           <div class="stat-value" id="currentHR">--</div>
@@ -547,38 +648,116 @@
           <div class="stat-label">BVP</div>
           <div class="stat-timestamp" id="bvpTimestamp"></div>
         </div>
+        <div class="stat-card">
+          <div class="stat-value" id="totalReadings">0</div>
+          <div class="stat-label">Total Readings</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value" id="totalActivities">0</div>
+          <div class="stat-label">Activities</div>
+        </div>
       </div>
-
-      <form id="healthForm">
-        <div class="form-group">
-          <label for="heartRate">Heart Rate (BPM)</label>
-          <input type="number" id="heartRate" min="30" max="250" placeholder="e.g., 72" required>
-        </div>
-        <div class="form-group">
-          <label for="bvp">Blood Volume Pulse (BVP)</label>
-          <input type="number" id="bvp" step="0.1" min="-1000" max="1000" placeholder="e.g., 10.5" required>
-        </div>
-        <button type="submit" class="submit-btn" id="submitBtn">
-          <span>Analyze Health Data</span>
-        </button>
-      </form>
-
-      <button class="export-btn" id="exportBtn" onclick="exportFromBackend()">
-        📊 Export Data from Backend
-      </button>
-
-      <button class="clear-btn" id="clearBtn" onclick="clearAllData()">
-        🗑️ Clear All Data
-      </button>
-
-      <div class="status-indicator" id="statusIndicator" style="display: none;"></div>
-<div class="card" id="insightCard" style="display:none; margin-top: 15px;">
-  <h3 style="color:#333; margin-bottom: 10px;">💡 AI Health Insight</h3>
-  <div id="insightText" style="font-size: 0.95em; color: #555;">No insight yet.</div>
-</div>
-
     </div>
 
+    <!-- Left panel: Input controls -->
+    <div class="card input-section">
+      <div class="compact-form">
+        <form id="healthForm">
+          <div class="form-group">
+            <label for="heartRate">Heart Rate (BPM)</label>
+            <input type="number" id="heartRate" min="30" max="250" placeholder="e.g., 72" required>
+          </div>
+          <div class="form-group">
+            <label for="bvp">Blood Volume Pulse (BVP)</label>
+            <input type="number" id="bvp" step="0.1" min="-1000" max="1000" placeholder="e.g., 10.5" required>
+          </div>
+          <div class="form-group">
+            <label for="currentActivity">Current Activity (optional)</label>
+            <select id="currentActivity">
+              <option value="">Select activity...</option>
+              <option value="resting">😴 Resting</option>
+              <option value="walking">🚶‍♂️ Walking</option>
+              <option value="running">🏃‍♂️ Running</option>
+              <option value="exercising">💪 Exercising</option>
+              <option value="working">💻 Working</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="stressLevel">Stress Level (1-10, optional)</label>
+            <select id="stressLevel">
+              <option value="">Select stress level...</option>
+              <option value="1">1 - Very Relaxed</option>
+              <option value="2">2 - Relaxed</option>
+              <option value="3">3 - Calm</option>
+              <option value="4">4 - Slightly Stressed</option>
+              <option value="5">5 - Moderate Stress</option>
+              <option value="6">6 - Stressed</option>
+              <option value="7">7 - Very Stressed</option>
+              <option value="8">8 - Highly Stressed</option>
+              <option value="9">9 - Extremely Stressed</option>
+              <option value="10">10 - Overwhelmed</option>
+            </select>
+          </div>
+          <button type="submit" class="submit-btn" id="submitBtn">
+            <span>Analyze Health Data</span>
+          </button>
+        </form>
+
+        <button class="export-btn" id="exportBtn" onclick="exportFromBackend()">
+          📊 Export Data from Backend
+        </button>
+
+        <button class="clear-btn" id="clearBtn" onclick="clearAllData()">
+          🗑️ Clear All Data
+        </button>
+
+        <div style="margin-top: 15px;">
+          <h4 style="color:#333; margin-bottom: 10px;">🏃‍♂️ Log Activity</h4>
+          <form id="activityForm">
+            <div class="form-group">
+              <label for="activityType">Activity Type</label>
+              <select id="activityType">
+                <option value="walking">🚶‍♂️ Walking</option>
+                <option value="running">🏃‍♂️ Running</option>
+                <option value="cycling">🚴‍♂️ Cycling</option>
+                <option value="swimming">🏊‍♂️ Swimming</option>
+                <option value="yoga">🧘‍♀️ Yoga</option>
+                <option value="strength_training">💪 Strength Training</option>
+                <option value="dancing">💃 Dancing</option>
+                <option value="rest">😴 Rest</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="duration">Duration (minutes)</label>
+              <input type="number" id="duration" min="1" max="1440" placeholder="e.g., 30" required>
+            </div>
+            <div class="form-group">
+              <label for="intensity">Intensity Level (1-5)</label>
+              <select id="intensity">
+                <option value="1">1 - Very Light</option>
+                <option value="2">2 - Light</option>
+                <option value="3">3 - Moderate</option>
+                <option value="4">4 - Hard</option>
+                <option value="5">5 - Very Hard</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="steps">Steps (optional)</label>
+              <input type="number" id="steps" min="0" placeholder="e.g., 5000">
+            </div>
+            <button type="submit" class="submit-btn" id="activitySubmitBtn">Log Activity</button>
+          </form>
+        </div>
+
+        <div class="status-indicator" id="statusIndicator" style="display: none;"></div>
+        <div id="insightCard" style="display:none; margin-top: 15px; padding: 15px; background: #e8f5e8; border-radius: 10px;">
+          <h4 style="color:#333; margin-bottom: 10px;">💡 AI Health Insight</h4>
+          <div id="insightText" style="font-size: 0.9em; color: #555;">No insight yet.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Center panel: Live monitoring -->
     <div class="monitoring-section">
       <div class="card">
         <div class="chart-container">
@@ -594,12 +773,22 @@
         </div>
       </div>
 
-      <div class="card">
-        <h3 style="margin-bottom: 20px; color: #333;">📊 Recent Readings</h3>
+      <div class="card compact-card">
+        <h3 style="margin-bottom: 15px; color: #333; font-size: 1.1em;">📊 Recent Readings</h3>
         <div class="history-section" id="historySection">
-          <div style="text-align: center; color: #666; padding: 20px;">
+          <div style="text-align: center; color: #666; padding: 15px; font-size: 0.9em;">
             No readings yet. Start monitoring your health!
           </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right panel: Activities -->
+    <div class="card activities-section">
+      <h3 style="margin-bottom: 15px; color: #333; font-size: 1.1em;">🏃‍♂️ Recent Activities</h3>
+      <div class="history-section" id="activityHistorySection">
+        <div style="text-align: center; color: #666; padding: 15px; font-size: 0.9em;">
+          No activities logged yet. Start tracking your activities!
         </div>
       </div>
     </div>
@@ -610,18 +799,46 @@
   <div class="data-persistence-indicator" id="dataPersistenceIndicator">
     💾 Data persisted locally
   </div>
+<!-- Floating Menu Toggle -->
+<div id="floatingMenu" style="position:fixed;top:20px;right:20px;z-index:1010;">
+  <button id="menuToggle" onclick="toggleFloatingMenu()" style="background:#667eea;color:white;padding:12px;border:none;border-radius:50%;box-shadow:0 4px 12px rgba(0,0,0,0.2);cursor:pointer;font-size:1.2em;width:48px;height:48px;display:flex;align-items:center;justify-content:center;">
+    ☰
+  </button>
+  <div id="floatingMenuItems" style="display:none;position:absolute;top:60px;right:0;background:var(--bg-secondary);border-radius:10px;box-shadow:var(--card-shadow);padding:10px;min-width:120px;">
+    <button id="darkModeToggle" onclick="toggleDarkMode()" style="width:100%;padding:8px 12px;background:transparent;border:none;cursor:pointer;border-radius:6px;margin-bottom:5px;color:var(--text-primary);font-size:0.9em;text-align:left;">
+      🌙 Dark Mode
+    </button>
+    <button onclick="toggleSidebar()" style="width:100%;padding:8px 12px;background:transparent;border:none;cursor:pointer;border-radius:6px;color:var(--text-primary);font-size:0.9em;text-align:left;">
+      📱 Sidebar
+    </button>
+  </div>
+</div>
+  <!-- Chat Assistant -->
+  <div id="chatAssistant" style="position:fixed;bottom:20px;left:20px;z-index:1005;">
+    <button onclick="toggleChat()" style="background:#764ba2;color:white;padding:10px 15px;border:none;border-radius:15px;box-shadow:0 4px 12px rgba(0,0,0,0.2);cursor:pointer;font-size:0.9em;">💬 Ask AI</button>
+  </div>
+  <div id="chatBox" style="display:none;position:fixed;bottom:70px;left:20px;width:280px;height:300px;z-index:1006;background:white;border:1px solid #ccc;border-radius:10px;box-shadow:0 6px 25px rgba(0,0,0,0.2);overflow:hidden;display:flex;flex-direction:column;">
+    <div style="background:#667eea;color:white;padding:8px 12px;font-weight:bold;font-size:0.9em;">AI Health Assistant</div>
+    <div id="chatMessages" style="flex:1;padding:8px;overflow-y:auto;font-size:0.85em;"></div>
+    <div style="padding:8px;border-top:1px solid #eee;">
+      <input type="text" id="chatInput" placeholder="Type your question..." style="width:70%;padding:6px;border-radius:5px;border:1px solid #ccc;font-size:0.85em;">
+      <button onclick="sendChat()" style="padding:6px 8px;background:#764ba2;color:white;border:none;border-radius:5px;font-size:0.85em;">Send</button>
+    </div>
+  </div>
 
   <script>
     // Configuration
     const API_BASE_URL = 'http://localhost:5000';
     const STORAGE_KEY = 'health_monitor_data';
     const CURRENT_READING_KEY = 'current_health_reading';
+    const ACTIVITY_STORAGE_KEY = 'health_monitor_activities';
     
     // DOM elements
     const form = document.getElementById('healthForm');
     const loadingOverlay = document.getElementById('loadingOverlay');
     const statusIndicator = document.getElementById('statusIndicator');
     const historySection = document.getElementById('historySection');
+    const activityHistorySection = document.getElementById('activityHistorySection');
     const currentHR = document.getElementById('currentHR');
     const currentBVP = document.getElementById('currentBVP');
     const hrTimestamp = document.getElementById('hrTimestamp');
@@ -636,8 +853,11 @@
     const exportBtn = document.getElementById('exportBtn');
     const clearBtn = document.getElementById('clearBtn');
     const dataPersistenceIndicator = document.getElementById('dataPersistenceIndicator');
+    const totalReadings = document.getElementById('totalReadings');
+    const totalActivities = document.getElementById('totalActivities');
 
     let history = [];
+    let activityHistory = [];
     let currentReading = null;
     let currentHeartRate = 0;
     let isConnected = false;
@@ -647,9 +867,12 @@
 
     async function init() {
       loadPersistedData();
+      loadActivityData();
       await checkBackendConnection();
       displayCurrentReading();
       displayHistory();
+      displayActivityHistory();
+      updateStatistics();
       startHeartRateAnimation();
       
       // Check connection every 30 seconds
@@ -659,24 +882,28 @@
       setInterval(saveDataToMemory, 10000);
     }
 
-  function saveDataToMemory() {
-    try {
-      const data = {
-        history: history,
-        currentReading: currentReading,
-        lastUpdate: new Date().toISOString()
-      };
-      // Store in memory variable instead of localStorage
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
-      console.log('Data saved to memory:', data); // Debug line
-      updatePersistenceIndicator();
-    } catch (error) {
-      console.error('Error saving data:', error);
+    function updateStatistics() {
+      totalReadings.textContent = history.length;
+      totalActivities.textContent = activityHistory.length;
     }
-  }
+
+    function saveDataToMemory() {
+      try {
+        const data = {
+          history: history,
+          currentReading: currentReading,
+          lastUpdate: new Date().toISOString()
+        };
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+        console.log('Data saved to memory:', data);
+        updatePersistenceIndicator();
+      } catch (error) {
+        console.error('Error saving data:', error);
+      }
+    }
+
     function loadPersistedData() {
       try {
-        // Load from memory variable
         const data = JSON.parse(localStorage.getItem(STORAGE_KEY));
         if (data) {
           history = data.history || [];
@@ -690,17 +917,45 @@
       }
     }
 
+    function loadActivityData() {
+      try {
+        const data = JSON.parse(localStorage.getItem(ACTIVITY_STORAGE_KEY));
+        if (data) {
+          activityHistory = data.activities || [];
+          console.log('Loaded activity data:', activityHistory);
+        }
+      } catch (error) {
+        console.error('Error loading activity data:', error);
+        activityHistory = [];
+      }
+    }
+
+    function saveActivityData() {
+      try {
+        const data = {
+          activities: activityHistory,
+          lastUpdate: new Date().toISOString()
+        };
+        localStorage.setItem(ACTIVITY_STORAGE_KEY, JSON.stringify(data));
+        console.log('Activity data saved');
+      } catch (error) {
+        console.error('Error saving activity data:', error);
+      }
+    }
+
     function updatePersistenceIndicator() {
       const count = history.length;
       const lastUpdate = currentReading ? new Date(currentReading.timestamp).toLocaleTimeString() : 'Never';
-      dataPersistenceIndicator.textContent = `💾 ${count} readings stored | Last: ${lastUpdate}`;
+      dataPersistenceIndicator.textContent = `💾 ${count} readings | Last: ${lastUpdate}`;
     }
 
     function clearAllData() {
       if (confirm('Are you sure you want to clear all stored data? This action cannot be undone.')) {
         history = [];
+        activityHistory = [];
         currentReading = null;
         localStorage.removeItem(STORAGE_KEY);
+        localStorage.removeItem(ACTIVITY_STORAGE_KEY);
         
         // Reset display
         currentHR.textContent = '--';
@@ -713,6 +968,8 @@
         statusIndicator.style.display = 'none';
         
         displayHistory();
+        displayActivityHistory();
+        updateStatistics();
         updatePersistenceIndicator();
         showNotification('All data cleared successfully!', 'success');
       }
@@ -772,7 +1029,7 @@
         pulseValue.textContent = currentReading.heartRate;
         updatePulseAnimation(currentReading.heartRate);
         
-        // Display current analysis result - always show it
+        // Display current analysis result
         showResult(currentReading, true);
       }
     }
@@ -809,51 +1066,48 @@
       submitBtn.disabled = true;
 
       try {
-        const response = await fetch(`${API_BASE_URL}/predict`, {
+        const response = await fetch(`${API_BASE_URL}/enhanced_predict`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
             heart_rate: heartRate,
-            bvp: bvp
+            bvp: bvp,
+            current_activity: document.getElementById('currentActivity').value || null,
+            stress_level: document.getElementById('stressLevel').value ? parseInt(document.getElementById('stressLevel').value) : null
           })
         });
 
-const data = await response.json();
+        const data = await response.json();
 
-if (response.ok) {
-  // Debug: Log what we received from the API
-  console.log('API Response:', data);
-  
-        // Store as current reading
-        currentReading = {
-          heartRate: heartRate,
-          bvp: bvp,
-          timestamp: new Date().toISOString(),
-          id: Date.now(),
-          status: data.status || data.prediction || 'normal', // Ensure status is set
-          ...data
-        };
-        
-        // Debug: Log what we're storing
-        console.log('Current Reading:', currentReading);
-        console.log('History length before save:', history.length);
-  
-        // Save to history first
-        saveToHistory(currentReading);
-        // Force immediate save to memory
-        saveDataToMemory();
-        // Show result with persistent flag
-        showResult(currentReading, true);
-        // Update display immediately
-        displayCurrentReading();
-        fetchInsight(currentReading);
-  
-        showNotification('Health data analyzed successfully!', 'success');
-  
-        // Clear form inputs after successful analysis
-        form.reset();
+        if (response.ok) {
+          console.log('API Response:', data);
+          
+          // Store as current reading
+          currentReading = {
+            heartRate: heartRate,
+            bvp: bvp,
+            timestamp: new Date().toISOString(),
+            id: Date.now(),
+            status: data.status || data.prediction || 'normal',
+            ...data
+          };
+          
+          console.log('Current Reading:', currentReading);
+          
+          // Save to history and update displays
+          saveToHistory(currentReading);
+          saveDataToMemory();
+          showResult(currentReading, true);
+          displayCurrentReading();
+          updateStatistics();
+          fetchInsight(currentReading);
+          
+          showNotification('Health data analyzed successfully!', 'success');
+          
+          // Clear form inputs
+          form.reset();
           
         } else {
           throw new Error(data.error || data.message || 'Unknown error');
@@ -862,16 +1116,15 @@ if (response.ok) {
         console.error('API call failed:', error);
         showNotification(`Analysis failed: ${error.message}`, 'error');
         
-        // Show error status
         statusIndicator.style.display = 'block';
         statusIndicator.className = 'status-indicator status-error persistent';
         statusIndicator.innerHTML = `
-          <div style="display: flex; align-items: center; margin-bottom: 10px;">
-            <span style="font-size: 1.5em; margin-right: 10px;">❌</span>
-            <strong style="font-size: 1.2em;">Error</strong>
+          <div style="display: flex; align-items: center; margin-bottom: 8px;">
+            <span style="font-size: 1.3em; margin-right: 8px;">❌</span>
+            <strong style="font-size: 1.1em;">Error</strong>
           </div>
-          <div style="margin-bottom: 10px;">Failed to analyze health data: ${error.message}</div>
-          <div style="font-size: 0.9em; opacity: 0.8;">
+          <div style="margin-bottom: 8px; font-size: 0.9em;">Failed to analyze health data: ${error.message}</div>
+          <div style="font-size: 0.8em; opacity: 0.8;">
             Please check your backend connection and try again.
           </div>
         `;
@@ -881,16 +1134,90 @@ if (response.ok) {
       }
     });
 
+    // Activity form handler
+    document.addEventListener('DOMContentLoaded', function() {
+      const activityForm = document.getElementById('activityForm');
+      if (activityForm) {
+        activityForm.addEventListener('submit', async (e) => {
+          e.preventDefault();
+          
+          if (!isConnected) {
+            showNotification('Cannot log activity - backend server is not connected', 'error');
+            return;
+          }
+
+          const activityType = document.getElementById('activityType').value;
+          const duration = parseFloat(document.getElementById('duration').value);
+          const intensity = parseInt(document.getElementById('intensity').value);
+          const steps = document.getElementById('steps').value ? parseInt(document.getElementById('steps').value) : null;
+
+          if (isNaN(duration) || duration <= 0) {
+            showNotification('Please enter a valid duration', 'error');
+            return;
+          }
+
+          const activitySubmitBtn = document.getElementById('activitySubmitBtn');
+          activitySubmitBtn.disabled = true;
+          activitySubmitBtn.textContent = 'Logging...';
+
+          try {
+            const response = await fetch(`${API_BASE_URL}/log_activity`, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({
+                activity_type: activityType,
+                duration_minutes: duration,
+                intensity_level: intensity,
+                steps: steps
+              })
+            });
+
+            const data = await response.json();
+
+            if (response.ok) {
+              const newActivity = {
+                activity_type: activityType,
+                duration_minutes: duration,
+                intensity_level: intensity,
+                steps: steps,
+                calories_calculated: data.calories_calculated,
+                timestamp: new Date().toISOString()
+              };
+              
+              activityHistory.unshift(newActivity);
+              if (activityHistory.length > 20) activityHistory = activityHistory.slice(0, 20);
+              
+              saveActivityData();
+              displayActivityHistory();
+              updateStatistics();
+              
+              showNotification(`Activity logged! Burned ~${data.calories_calculated} calories`, 'success');
+              activityForm.reset();
+            } else {
+              throw new Error(data.error || 'Failed to log activity');
+            }
+          } catch (error) {
+            console.error('Activity logging failed:', error);
+            showNotification(`Failed to log activity: ${error.message}`, 'error');
+          } finally {
+            activitySubmitBtn.disabled = false;
+            activitySubmitBtn.textContent = 'Log Activity';
+          }
+        });
+      }
+    });
+
     function updatePulseAnimation(heartRate) {
-      const duration = 60 / heartRate; // Convert BPM to seconds per beat
+      const duration = 60 / heartRate;
       pulseAnimation.style.animationDuration = `${duration}s`;
       currentHeartRate = heartRate;
     }
 
     function startHeartRateAnimation() {
-      // Start with default pulse if no data
       if (currentHeartRate === 0) {
-      pulseAnimation.style.animationDuration = '1s';
+        pulseAnimation.style.animationDuration = '1s';
       }
     }
 
@@ -904,41 +1231,41 @@ if (response.ok) {
       let message = '';
 
       switch (reading.status) {
-      case 'normal':
-        statusClass = 'status-indicator status-normal' + (persistent ? ' persistent' : '');
-        icon = '✅';
-        title = 'Normal';
-        message = 'Your vital signs are within the normal range.';
-        break;
-      case 'abnormal':
-        statusClass = 'status-indicator status-abnormal' + (persistent ? ' persistent' : '');
-        icon = '⚠️';
-        title = 'Abnormal';
-        message = 'Some vital signs are outside the normal range. Please monitor closely.';
-        break;
-      case 'warning':
-        statusClass = 'status-indicator status-warning' + (persistent ? ' persistent' : '');
-        icon = '⚠️';
-        title = 'Warning';
-        message = 'There is a warning with your health data. Consider consulting a professional.';
-        break;
-      default:
-        statusClass = 'status-indicator status-normal' + (persistent ? ' persistent' : '');
-        icon = 'ℹ️';
-        title = 'Info';
-        message = 'Awaiting analysis.';
+        case 'normal':
+          statusClass = 'status-indicator status-normal' + (persistent ? ' persistent' : '');
+          icon = '✅';
+          title = 'Normal';
+          message = 'Your vital signs are within the normal range.';
+          break;
+        case 'abnormal':
+          statusClass = 'status-indicator status-abnormal' + (persistent ? ' persistent' : '');
+          icon = '⚠️';
+          title = 'Abnormal';
+          message = 'Some vital signs are outside the normal range. Please monitor closely.';
+          break;
+        case 'warning':
+          statusClass = 'status-indicator status-warning' + (persistent ? ' persistent' : '');
+          icon = '⚠️';
+          title = 'Warning';
+          message = 'There is a warning with your health data. Consider consulting a professional.';
+          break;
+        default:
+          statusClass = 'status-indicator status-normal' + (persistent ? ' persistent' : '');
+          icon = 'ℹ️';
+          title = 'Info';
+          message = 'Awaiting analysis.';
       }
 
       statusIndicator.className = statusClass;
       statusIndicator.innerHTML = `
-      <div style="display: flex; align-items: center; margin-bottom: 10px;">
-        <span style="font-size: 1.5em; margin-right: 10px;">${icon}</span>
-        <strong style="font-size: 1.2em;">${title}</strong>
-      </div>
-      <div style="margin-bottom: 10px;">${message}</div>
-      <div style="font-size: 0.9em; opacity: 0.8;">
-        Last analyzed: ${new Date(reading.timestamp).toLocaleString()}
-      </div>
+        <div style="display: flex; align-items: center; margin-bottom: 8px;">
+          <span style="font-size: 1.3em; margin-right: 8px;">${icon}</span>
+          <strong style="font-size: 1.1em;">${title}</strong>
+        </div>
+        <div style="margin-bottom: 8px; font-size: 0.9em;">${message}</div>
+        <div style="font-size: 0.8em; opacity: 0.8;">
+          Last analyzed: ${new Date(reading.timestamp).toLocaleString()}
+        </div>
       `;
     }
 
@@ -948,12 +1275,12 @@ if (response.ok) {
         console.log('No reading provided');
         return;
       }
-// Add new reading to history
+      
       history.unshift(reading);
       console.log('Added to history, new length:', history.length);
-      // Limit history to last 50 readings
+      
       if (history.length > 50) history = history.slice(0, 50);
-      // Add small delay to ensure DOM updates
+      
       setTimeout(() => {
         displayHistory();
       }, 100);
@@ -964,149 +1291,230 @@ if (response.ok) {
     function displayHistory() {
       historySection.innerHTML = '';
       if (!history.length) {
-      historySection.innerHTML = `<div style="text-align: center; color: #666; padding: 20px;">
-        No readings yet. Start monitoring your health!
-      </div>`;
-      return;
+        historySection.innerHTML = `<div style="text-align: center; color: #666; padding: 15px; font-size: 0.9em;">
+          No readings yet. Start monitoring your health!
+        </div>`;
+        return;
       }
+      
       history.forEach((item, idx) => {
-      const isLatest = idx === 0;
-      const cardClass = 'history-item' + (isLatest ? ' latest' : '');
-      const statusIcon = item.status === 'normal' ? '✅' : (item.status === 'abnormal' ? '⚠️' : 'ℹ️');
-      historySection.innerHTML += `
-        <div class="${cardClass}">
-        <div style="display: flex; align-items: center; gap: 10px;">
-          <span style="font-size: 1.2em;">${statusIcon}</span>
-          <strong>HR:</strong> ${item.heartRate} BPM &nbsp; 
-          <strong>BVP:</strong> ${item.bvp.toFixed(1)}
-        </div>
-        <div style="font-size: 0.9em; color: #888; margin-top: 5px;">
-          ${new Date(item.timestamp).toLocaleString()}
-        </div>
-        <div style="font-size: 0.95em; margin-top: 5px;">
-          Status: <span style="text-transform: capitalize;">${item.status || 'unknown'}</span>
-        </div>
-        </div>
-      `;
+        const isLatest = idx === 0;
+        const cardClass = 'history-item' + (isLatest ? ' latest' : '');
+        const statusIcon = item.status === 'normal' ? '✅' : (item.status === 'abnormal' ? '⚠️' : 'ℹ️');
+        historySection.innerHTML += `
+          <div class="${cardClass}">
+            <div style="display: flex; align-items: center; gap: 8px; font-size: 0.9em;">
+              <span style="font-size: 1.1em;">${statusIcon}</span>
+              <strong>HR:</strong> ${item.heartRate} BPM &nbsp; 
+              <strong>BVP:</strong> ${item.bvp.toFixed(1)}
+            </div>
+            <div style="font-size: 0.8em; color: #888; margin-top: 4px;">
+              ${new Date(item.timestamp).toLocaleString()}
+            </div>
+            <div style="font-size: 0.85em; margin-top: 4px;">
+              Status: <span style="text-transform: capitalize;">${item.status || 'unknown'}</span>
+            </div>
+          </div>
+        `;
+      });
+    }
+
+    function displayActivityHistory() {
+      if (!activityHistorySection) return;
+      
+      activityHistorySection.innerHTML = '';
+      if (!activityHistory.length) {
+        activityHistorySection.innerHTML = `<div style="text-align: center; color: #666; padding: 15px; font-size: 0.9em;">
+          No activities logged yet. Start tracking your activities!
+        </div>`;
+        return;
+      }
+      
+      activityHistory.forEach((activity, idx) => {
+        const isLatest = idx === 0;
+        const cardClass = 'history-item' + (isLatest ? ' latest' : '');
+        activityHistorySection.innerHTML += `
+          <div class="${cardClass}">
+            <div style="display: flex; align-items: center; gap: 8px; font-size: 0.9em;">
+              <span style="font-size: 1.1em;">🏃‍♂️</span>
+              <strong>${activity.activity_type}</strong>
+              <span style="background: #667eea; color: white; padding: 1px 6px; border-radius: 8px; font-size: 0.75em;">
+                ${activity.duration_minutes}min
+              </span>
+            </div>
+            <div style="font-size: 0.8em; color: #888; margin-top: 4px;">
+              ${new Date(activity.timestamp).toLocaleString()}
+            </div>
+            <div style="font-size: 0.85em; margin-top: 4px;">
+              Intensity: ${activity.intensity_level}/5 • Calories: ${activity.calories_calculated || 'N/A'}
+            </div>
+          </div>
+        `;
       });
     }
 
     function showNotification(msg, type = 'success') {
       notification.textContent = msg;
       notification.className = `notification ${type} show`;
-      // Only auto-hide for notifications, not for status/result
       setTimeout(() => {
         notification.classList.remove('show');
       }, 3500);
     }
     
-function fetchInsight(reading) {
-  if (!reading) return;
-  fetch(`${API_BASE_URL}/insight`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      heart_rate: reading.heartRate,
-      bvp: reading.bvp,
-      status: reading.status,
-      recommendation: reading.recommendation || ''
-    })
-  })
-  .then(res => res.json())
-  .then(data => {
-    const card = document.getElementById('insightCard');
-    const text = document.getElementById('insightText');
-    if (data.insight) {
-      text.textContent = data.insight;
-      card.style.display = 'block';
-    } else {
-      text.textContent = 'No insight available.';
-      card.style.display = 'block';
+    function fetchInsight(reading) {
+      if (!reading) return;
+      fetch(`${API_BASE_URL}/insight`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          heart_rate: reading.heartRate,
+          bvp: reading.bvp,
+          status: reading.status,
+          recommendation: reading.recommendation || ''
+        })
+      })
+      .then(res => res.json())
+      .then(data => {
+        const card = document.getElementById('insightCard');
+        const text = document.getElementById('insightText');
+        if (data.insight) {
+          text.textContent = data.insight;
+          card.style.display = 'block';
+        } else {
+          text.textContent = 'No insight available.';
+          card.style.display = 'block';
+        }
+      })
+      .catch(err => console.error("Insight error:", err));
     }
-  })
-  .catch(err => console.error("Insight error:", err));
-}
 
-function toggleChat() {
-  const box = document.getElementById("chatBox");
-  box.style.display = box.style.display === "none" ? "flex" : "none";
-}
-
-function sendChat() {
-  const input = document.getElementById("chatInput");
-  const message = input.value.trim();
-  if (!message) return;
-  const chatMessages = document.getElementById("chatMessages");
-  chatMessages.innerHTML += `<div><strong>You:</strong> ${message}</div>`;
-  input.value = "";
-
-  fetch(`${API_BASE_URL}/chat`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ message: message })
-  })
-  .then(res => res.json())
-  .then(data => {
-    chatMessages.innerHTML += `<div><strong>AI:</strong> ${data.response || 'Error occurred'}</div>`;
-    chatMessages.scrollTop = chatMessages.scrollHeight;
-  })
-  .catch(err => {
-    console.error("Chat error:", err);
-    chatMessages.innerHTML += `<div style="color:red;">⚠️ Failed to get AI response.</div>`;
-  });
-}
-
-
-async function requestAIInsight(heartRate, bvp, status, recommendation) {
-  try {
-    const response = await fetch(`${API_BASE_URL}/insight`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ heart_rate: heartRate, bvp: bvp, status, recommendation })
-    });
-    const data = await response.json();
-    if (response.ok) {
-      alert("💡 AI Insight:\n" + data.insight);
-    } else {
-      alert("AI Insight Error: " + (data.error || "Unknown error"));
+    function toggleChat() {
+      const box = document.getElementById("chatBox");
+      box.style.display = box.style.display === "none" ? "flex" : "none";
     }
-  } catch (err) {
-    console.error("Insight API call failed", err);
-    alert("Failed to fetch AI insight.");
-  }
-}
 
-async function sendHealthChatMessage(message) {
-  try {
-    const response = await fetch(`${API_BASE_URL}/chat`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ message })
-    });
-    const data = await response.json();
-    if (response.ok) {
-      alert("🤖 AI says:\n" + data.response);
-    } else {
-      alert("Chat Error: " + (data.error || "Unknown error"));
+    function sendChat() {
+      const input = document.getElementById("chatInput");
+      const message = input.value.trim();
+      if (!message) return;
+      const chatMessages = document.getElementById("chatMessages");
+      chatMessages.innerHTML += `<div><strong>You:</strong> ${message}</div>`;
+      input.value = "";
+
+      fetch(`${API_BASE_URL}/chat`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ message: message })
+      })
+      .then(res => res.json())
+      .then(data => {
+        chatMessages.innerHTML += `<div><strong>AI:</strong> ${data.response || 'Error occurred'}</div>`;
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+      })
+      .catch(err => {
+        console.error("Chat error:", err);
+        chatMessages.innerHTML += `<div style="color:red;">⚠️ Failed to get AI response.</div>`;
+      });
     }
-  } catch (err) {
-    console.error("Chat API call failed", err);
-    alert("Failed to contact health assistant.");
-  }
-}
 
-</script>
+    async function exportFromBackend() {
+      if (!isConnected) {
+        showNotification('Cannot export - backend server is not connected', 'error');
+        return;
+      }
+
+      try {
+        exportBtn.disabled = true;
+        exportBtn.textContent = '📊 Exporting...';
+        
+        const response = await fetch(`${API_BASE_URL}/export_data`, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        });
+
+        if (response.ok) {
+          const blob = await response.blob();
+          const url = window.URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.style.display = 'none';
+          a.href = url;
+          a.download = `health_data_${new Date().toISOString().split('T')[0]}.csv`;
+          document.body.appendChild(a);
+          a.click();
+          window.URL.revokeObjectURL(url);
+          showNotification('Data exported successfully!', 'success');
+        } else {
+          throw new Error('Export failed');
+        }
+      } catch (error) {
+        console.error('Export failed:', error);
+        showNotification('Failed to export data', 'error');
+      } finally {
+        exportBtn.disabled = false;
+        exportBtn.textContent = '📊 Export Data from Backend';
+      }
+    }
+    // Dark mode and menu functionality
+let isDarkMode = false;
+let isMenuOpen = false;
+
+function toggleDarkMode() {
+  isDarkMode = !isDarkMode;
+  const body = document.body;
+  const darkModeToggle = document.getElementById('darkModeToggle');
   
-<div id="chatAssistant" style="position:fixed;bottom:20px;left:20px;z-index:1005;">
-  <button onclick="toggleChat()" style="background:#764ba2;color:white;padding:12px 18px;border:none;border-radius:20px;box-shadow:0 5px 15px rgba(0,0,0,0.2);cursor:pointer;">💬 Ask AI</button>
-</div>
-<div id="chatBox" style="display:none;position:fixed;bottom:80px;left:20px;width:300px;height:350px;z-index:1006;background:white;border:1px solid #ccc;border-radius:12px;box-shadow:0 8px 30px rgba(0,0,0,0.2);overflow:hidden;display:flex;flex-direction:column;">
-  <div style="background:#667eea;color:white;padding:10px 15px;font-weight:bold;">AI Health Assistant</div>
-  <div id="chatMessages" style="flex:1;padding:10px;overflow-y:auto;font-size:0.9em;"></div>
-  <div style="padding:10px;border-top:1px solid #eee;">
-    <input type="text" id="chatInput" placeholder="Type your question..." style="width:80%;padding:8px;border-radius:6px;border:1px solid #ccc;">
-    <button onclick="sendChat()" style="padding:8px 10px;background:#764ba2;color:white;border:none;border-radius:6px;">Send</button>
-  </div>
-</div>
+  if (isDarkMode) {
+    body.setAttribute('data-theme', 'dark');
+    darkModeToggle.innerHTML = '☀️ Light Mode';
+    localStorage.setItem('darkMode', 'true');
+  } else {
+    body.removeAttribute('data-theme');
+    darkModeToggle.innerHTML = '🌙 Dark Mode';
+    localStorage.setItem('darkMode', 'false');
+  }
+}
+
+function toggleFloatingMenu() {
+  isMenuOpen = !isMenuOpen;
+  const menuItems = document.getElementById('floatingMenuItems');
+  const menuToggle = document.getElementById('menuToggle');
+  
+  if (isMenuOpen) {
+    menuItems.style.display = 'block';
+    menuToggle.style.transform = 'rotate(45deg)';
+  } else {
+    menuItems.style.display = 'none';
+    menuToggle.style.transform = 'rotate(0deg)';
+  }
+}
+
+function toggleSidebar() {
+  // This will be implemented in the next update
+  showNotification('Sidebar toggle coming in next update!', 'success');
+}
+
+// Initialize dark mode from localStorage
+function initializeDarkMode() {
+  const savedMode = localStorage.getItem('darkMode');
+  if (savedMode === 'true') {
+    isDarkMode = true;
+    document.body.setAttribute('data-theme', 'dark');
+    const darkModeToggle = document.getElementById('darkModeToggle');
+    if (darkModeToggle) {
+      darkModeToggle.innerHTML = '☀️ Light Mode';
+    }
+  }
+}
+
+// Close floating menu when clicking outside
+document.addEventListener('click', function(event) {
+  const floatingMenu = document.getElementById('floatingMenu');
+  if (!floatingMenu.contains(event.target) && isMenuOpen) {
+    toggleFloatingMenu();
+  }
+});
+  </script>
 </body>
-  </html>
+</html>

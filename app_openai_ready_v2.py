@@ -18,6 +18,11 @@ from flask_cors import CORS
 import csv
 import os
 from dotenv import load_dotenv
+# ADD THESE NEW IMPORTS after your existing ones
+from datetime import datetime, timedelta
+from typing import Optional, List, Dict
+import sqlite3
+from contextlib import contextmanager
 
 # Load environment variables from .env file
 load_dotenv()
@@ -104,6 +109,30 @@ def initialize_openai_client():
 class HealthInput(BaseModel):
     heart_rate: float = Field(..., ge=30, le=250)
     bvp: float = Field(..., ge=-1000, le=1000)
+# ADD THESE NEW CLASSES after your existing HealthInput class
+
+class ActivityInput(BaseModel):
+    activity_type: str = Field(..., description="Type of activity (walking, running, cycling, etc.)")
+    duration_minutes: float = Field(..., ge=0.1, le=1440)  # Max 24 hours
+    intensity_level: int = Field(..., ge=1, le=5)  # 1=very light, 5=very intense
+    calories_burned: Optional[float] = Field(None, ge=0)
+    distance_km: Optional[float] = Field(None, ge=0)
+    steps: Optional[int] = Field(None, ge=0)
+    heart_rate_avg: Optional[float] = Field(None, ge=30, le=250)
+    notes: Optional[str] = Field(None, max_length=500)
+
+class EnhancedHealthInput(BaseModel):
+    # Existing fields
+    heart_rate: float = Field(..., ge=30, le=250)
+    bvp: float = Field(..., ge=-1000, le=1000)
+    
+    # New activity-related fields
+    current_activity: Optional[str] = Field(None, description="Current activity being performed")
+    activity_intensity: Optional[int] = Field(None, ge=1, le=5)
+    steps_last_hour: Optional[int] = Field(None, ge=0)
+    sleep_hours_last_night: Optional[float] = Field(None, ge=0, le=24)
+    stress_level: Optional[int] = Field(None, ge=1, le=10)  # 1=very relaxed, 10=very stressed
+    hydration_level: Optional[int] = Field(None, ge=1, le=5)  # 1=dehydrated, 5=well hydrated
 
 def explain_results_with_ai(heart_rate, bvp, status, recommendation):
     """Use OpenAI to explain the prediction in user-friendly language."""
@@ -131,6 +160,88 @@ def explain_results_with_ai(heart_rate, bvp, status, recommendation):
     except Exception as e:
         logger.error(f"OpenAI error: {e}")
         return f"AI explanation unavailable due to an error: {str(e)}"
+# ADD THESE DATABASE FUNCTIONS after your OpenAI functions
+
+# Database setup for activity tracking
+DATABASE_PATH = 'health_monitor.db'
+
+@contextmanager
+def get_db_connection():
+    """Context manager for database connections"""
+    conn = sqlite3.connect(DATABASE_PATH)
+    conn.row_factory = sqlite3.Row
+    try:
+        yield conn
+    finally:
+        conn.close()
+
+def init_database():
+    """Initialize SQLite database for storing health and activity data"""
+    with get_db_connection() as conn:
+        # Activities table
+        conn.execute('''
+            CREATE TABLE IF NOT EXISTS activities (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                timestamp TEXT NOT NULL,
+                activity_type TEXT NOT NULL,
+                duration_minutes REAL NOT NULL,
+                intensity_level INTEGER NOT NULL,
+                calories_burned REAL,
+                distance_km REAL,
+                steps INTEGER,
+                heart_rate_avg REAL,
+                notes TEXT,
+                created_at TEXT DEFAULT CURRENT_TIMESTAMP
+            )
+        ''')
+        
+        # Enhanced health readings table
+        conn.execute('''
+            CREATE TABLE IF NOT EXISTS health_readings (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                timestamp TEXT NOT NULL,
+                heart_rate REAL NOT NULL,
+                bvp REAL NOT NULL,
+                current_activity TEXT,
+                activity_intensity INTEGER,
+                steps_last_hour INTEGER,
+                sleep_hours_last_night REAL,
+                stress_level INTEGER,
+                hydration_level INTEGER,
+                status TEXT NOT NULL,
+                confidence TEXT NOT NULL,
+                anomaly_score REAL,
+                recommendation TEXT,
+                created_at TEXT DEFAULT CURRENT_TIMESTAMP
+            )
+        ''')
+        
+        conn.commit()
+        logger.info("Database initialized successfully")
+
+def calculate_calories_burned(activity_type: str, duration_minutes: float, 
+                            intensity_level: int, weight_kg: float = 70) -> float:
+    """Calculate calories burned based on activity type, duration, and intensity"""
+    # MET (Metabolic Equivalent) values for different activities
+    met_values = {
+        'walking': [2.0, 2.5, 3.0, 3.5, 4.0],
+        'running': [6.0, 8.0, 10.0, 12.0, 15.0],
+        'cycling': [4.0, 6.0, 8.0, 10.0, 12.0],
+        'swimming': [4.0, 6.0, 8.0, 10.0, 12.0],
+        'yoga': [2.0, 2.5, 3.0, 3.5, 4.0],
+        'strength_training': [3.0, 4.0, 5.0, 6.0, 8.0],
+        'dancing': [3.0, 4.0, 5.0, 6.0, 7.0],
+        'rest': [1.0, 1.0, 1.0, 1.0, 1.0]
+    }
+    
+    # Get MET value based on activity and intensity
+    activity_lower = activity_type.lower().replace(' ', '_')
+    met_array = met_values.get(activity_lower, met_values['walking'])
+    met_value = met_array[intensity_level - 1]
+    
+    # Calculate calories: MET × weight(kg) × time(hours)
+    calories = met_value * weight_kg * (duration_minutes / 60)
+    return round(calories, 1)
 
 @app.route('/insight', methods=['POST'])
 def openai_insight():
@@ -733,18 +844,150 @@ def index():
             "method_4": "Use /setup-openai endpoint to configure via API"
         }
     })
+# ADD THESE NEW ENDPOINTS after your existing endpoints
 
+@app.route('/log_activity', methods=['POST'])
+def log_activity():
+    """Log a new activity session"""
+    try:
+        data = request.get_json()
+        logger.info(f"Received activity log request: {data}")
+        
+        # Validate input
+        try:
+            activity_input = ActivityInput(**data)
+        except ValidationError as e:
+            return jsonify({"error": f"Invalid input data: {str(e)}"}), 400
+        
+        # Calculate calories if not provided
+        calories = activity_input.calories_burned
+        if calories is None:
+            calories = calculate_calories_burned(
+                activity_input.activity_type,
+                activity_input.duration_minutes,
+                activity_input.intensity_level
+            )
+        
+        # Store in database
+        with get_db_connection() as conn:
+            conn.execute('''
+                INSERT INTO activities 
+                (timestamp, activity_type, duration_minutes, intensity_level, 
+                 calories_burned, distance_km, steps, heart_rate_avg, notes)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+            ''', (
+                datetime.now().isoformat(),
+                activity_input.activity_type,
+                activity_input.duration_minutes,
+                activity_input.intensity_level,
+                calories,
+                activity_input.distance_km,
+                activity_input.steps,
+                activity_input.heart_rate_avg,
+                activity_input.notes
+            ))
+            conn.commit()
+        
+        return jsonify({
+            "status": "success",
+            "message": "Activity logged successfully",
+            "calories_calculated": calories,
+            "timestamp": datetime.now().isoformat()
+        })
+        
+    except Exception as e:
+        logger.error(f"Error logging activity: {str(e)}")
+        return jsonify({"error": f"Failed to log activity: {str(e)}"}), 500
+
+@app.route('/enhanced_predict', methods=['POST'])
+def enhanced_predict():
+    """Enhanced prediction with activity context"""
+    try:
+        data = request.get_json()
+        logger.info(f"Received enhanced prediction request: {data}")
+        
+        # Validate input
+        try:
+            health_input = EnhancedHealthInput(**data)
+        except ValidationError as e:
+            return jsonify({"error": f"Invalid input data: {str(e)}"}), 400
+        
+        # Get base prediction (use your existing function)
+        base_result = detect_and_recommend(health_input.heart_rate, health_input.bvp)
+        
+        # Add simple activity context
+        if health_input.current_activity:
+            activity_note = f"During {health_input.current_activity}"
+            base_result['recommendation'] += f" (Context: {activity_note})"
+        
+        # Store in database
+        with get_db_connection() as conn:
+            conn.execute('''
+                INSERT INTO health_readings 
+                (timestamp, heart_rate, bvp, current_activity, activity_intensity,
+                 steps_last_hour, sleep_hours_last_night, stress_level, hydration_level,
+                 status, confidence, anomaly_score, recommendation)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            ''', (
+                base_result['timestamp'],
+                health_input.heart_rate,
+                health_input.bvp,
+                health_input.current_activity,
+                health_input.activity_intensity,
+                health_input.steps_last_hour,
+                health_input.sleep_hours_last_night,
+                health_input.stress_level,
+                health_input.hydration_level,
+                base_result['status'],
+                base_result['confidence'],
+                base_result.get('anomaly_score'),
+                base_result['recommendation']
+            ))
+            conn.commit()
+        
+        return jsonify(base_result)
+        
+    except Exception as e:
+        logger.error(f"Error in enhanced prediction: {str(e)}")
+        return jsonify({"error": f"Failed to process enhanced prediction: {str(e)}"}), 500
+
+@app.route('/get_activities', methods=['GET'])
+def get_activities():
+    """Get recent activities"""
+    try:
+        limit = request.args.get('limit', 10)
+        
+        with get_db_connection() as conn:
+            activities = conn.execute('''
+                SELECT * FROM activities 
+                ORDER BY timestamp DESC 
+                LIMIT ?
+            ''', (limit,)).fetchall()
+        
+        return jsonify({
+            "activities": [dict(row) for row in activities],
+            "count": len(activities)
+        })
+        
+    except Exception as e:
+        logger.error(f"Error getting activities: {str(e)}")
+        return jsonify({"error": f"Failed to get activities: {str(e)}"}), 500
+    
 if __name__ == '__main__':
     try:
-        # Initialize OpenAI client
+        # Initialize database (NEW!)
+        init_database()
+        
+        # Initialize OpenAI client (your existing code)
         initialize_openai_client()
         
-        # Load or create model
+        # Load or create model (your existing code)
         load_or_create_model()
         
-        logger.info("🚀 Starting Health Monitoring API...")
+        logger.info("🚀 Starting Enhanced Health Monitoring API...")
         logger.info(f"📊 Model status: {'✅ Ready' if model_iso else '❌ Not loaded'}")
         logger.info(f"🤖 OpenAI status: {'✅ Connected' if openai_client else '❌ Not configured'}")
+        logger.info(f"🗄️  Database initialized successfully")  # NEW!
         
         app.run(host='0.0.0.0', port=5000, debug=False, use_reloader=False)
         
